@@ -9,40 +9,32 @@ using namespace std;
 
 class Solution{
 public:
-    void helper(int ind, vector<int> &arr, int sum, int &k, set<vector<int>> &s,
-                vector<int> &ans){
-        
-        // calculations
-        if(sum==k){
-            s.insert(ans);
+    void helper(int ind, vector<int> &arr, int target, vector<int> &temp,
+                vector<vector<int>> &ans){
+        // base case
+        if(target==0){
+            ans.push_back(temp);
             return;
         }
-        
-        // base case
-        if(ind>=arr.size() or arr[ind]>k)       return;
-        
+
         // recursive case
-        if(sum+arr[ind] <= k){
-            ans.push_back(arr[ind]);
-            helper(ind+1, arr, sum+arr[ind], k, s, ans);
-            ans.pop_back();
+        for(int i=ind; i<arr.size(); ++i){
+            if(i>ind and arr[i]==arr[i-1])  continue;
+            if(arr[i]>target)               break;
+            temp.push_back(arr[i]);
+            helper(i+1, arr, target-arr[i], temp, ans);
+            temp.pop_back();
         }
-        helper(ind+1, arr, sum, k, s, ans);
-        
-        // return from current state
         return;
     }
-    vector<vector<int>> CombinationSum2(vector<int> arr,int n,int k)
+    vector<vector<int>> CombinationSum2(vector<int> arr,int n,int target)
     {
         //code here
         sort(arr.begin(), arr.end());
-        set<vector<int>> s;
-        vector<int> ans;
-        helper(0, arr, 0, k, s, ans);
-        vector<vector<int>> temp;
-        for(auto &v : s)
-            temp.push_back(v);
-        return temp;
+        vector<int> temp;
+        vector<vector<int>> ans;
+        helper(0, arr, target, temp, ans);
+        return ans;
     }
 };
 
