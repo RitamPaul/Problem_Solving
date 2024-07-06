@@ -16,7 +16,7 @@ public:
         // base case
         if(!root)       return 0;
 
-        // recursive case : inorder traversal
+        // recursive case
         int lchild=0, rchild=0;
         // same value countinues
         if(parent->val == root->val){
