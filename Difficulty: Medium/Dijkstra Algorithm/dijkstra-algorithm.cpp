@@ -6,36 +6,40 @@ using namespace std;
 
 
 bool vis[1000+1];
-priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
 class Solution
 {
-	public:
-	//Function to find the shortest distance of all the vertices
-    //from the source vertex S.
-    vector <int> dijkstra(int v, vector<vector<int>> adj[], int S)
+public:
+    vector<int> dijkstra(int v, vector<vector<int>> adj[], int src)
     {
-        // Code here
-        memset(vis, 0, sizeof vis);
-        vector<int> ans(v, INT_MAX);
-        ans[S] = 0;
-        pq.push( {0, S} );
-        while(pq.size()){
+        vector<int> dist(v, INT_MAX);
+        memset(vis, false, sizeof vis);
+
+        priority_queue<
+            pair<int, int>,
+            vector<pair<int,int>>,
+            greater<pair<int,int>>> pq;
+
+        dist[src] = 0;
+        pq.push({ dist[src], src });
+
+        while (pq.size()) {
             int curnode = pq.top().second;
             int curdist = pq.top().first;
             pq.pop();
             vis[curnode] = true;
-            
-            for(const auto &p : adj[curnode]){
-                int neigh = p[0];
-                int weigh = p[1];
-                
-                if(!vis[neigh] and curdist+weigh < ans[neigh]){
-                    ans[neigh] = curdist + weigh;
-                    pq.push( {ans[neigh], neigh} );
+
+            for (const auto &neigh : adj[curnode]) {
+                int neinode = neigh[0];
+                int neidist = neigh[1];
+
+                if (curdist + neidist < dist[neinode]) {
+                    dist[neinode] =  curdist + neidist;
+                    pq.push({ dist[neinode], neinode });
                 }
             }
         }
-        return ans;
+
+        return dist;
     }
 };
 
