@@ -15,7 +15,6 @@ public:
                 mp.erase(i);
         }
 
-        if(mp.empty())      return true;
-        return false;
+        return true;
     }
 };
