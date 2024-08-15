@@ -61,7 +61,7 @@ class Solution {
         Node *rhead = reverse(head);
         
         Node *cur=rhead, *prev=NULL;
-        int carry=1, sum=0;
+        int carry{1}, sum{0};
         while(cur){
             sum = cur->data + carry;
             cur->data = sum % 10;
@@ -77,6 +77,7 @@ class Solution {
         return reverse(rhead);
     }
 };
+
 
 //{ Driver Code Starts.
 
