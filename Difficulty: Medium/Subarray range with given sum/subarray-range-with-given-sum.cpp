@@ -17,7 +17,7 @@ class Solution {
             int findsum = sum - tar;
             if(sum == tar)
                 ++ans;
-            else if(mp.count(findsum))
+            if(mp.count(findsum))
                 ans += mp[findsum];
             ++mp[sum];
         }
