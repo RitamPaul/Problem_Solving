@@ -30,13 +30,6 @@ public:
             if(i!=0)
                 right.push_back(nums[i]);
         }
-        printf("left=[");
-        for(auto &i : left)
-            printf("%d,",i);
-        printf("] \nright=[");
-        for(auto &i : right)
-            printf("%d,",i);
-        printf("]");
         return max(helper(left), helper(right));
     }
 };
