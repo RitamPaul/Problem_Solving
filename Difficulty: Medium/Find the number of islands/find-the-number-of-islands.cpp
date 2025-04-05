@@ -2,40 +2,36 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 // } Driver Code Ends
 
-bool vis[500+1][500+1];
-int r;
-int c;
-int ans;
-int dx[] = {0, 0, -1, 1, -1, -1, 1, 1};
-int dy[] = {-1, 1, 0, 0, -1, 1, -1, 1};
+int row,col;
+// l, r, u, d, lu, ld, ru, rd
+int di[]={0,0,-1,1,-1,1,-1,1};
+int dj[]={-1,1,0,0,-1,-1,1,1};
 class Solution {
   public:
-    void func(vector<vector<char>>& grid, int x, int y){
-        // base case
-        
-        vis[x][y] = true;
-        for(int i=0; i<8; ++i){
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if(0<=nx and nx<r and 0<=ny and ny<c and grid[nx][ny]=='1' and !vis[nx][ny])
-                func(grid, nx, ny);
+    void dfs(int i, int j, vector<vector<char>> &grid, vector<vector<bool>> &vis){
+        vis[i][j]=true;
+        for(int k=0; k<8; ++k){
+            int ni=i+di[k];
+            int nj=j+dj[k];
+            if(0<=ni and ni<row and 0<=nj and nj<col
+            and !vis[ni][nj] and grid[ni][nj]=='L')
+                dfs(ni,nj,grid,vis);
         }
         return;
     }
-    // Function to find the number of islands.
-    int numIslands(vector<vector<char>>& grid) {
+    int countIslands(vector<vector<char>>& grid) {
         // Code here
-        r=grid.size();
-        c=grid[0].size();
-        ans=0;
-        memset(vis, 0, sizeof vis);
-        
-        for(int i=0; i<r; ++i){
-            for(int j=0; j<c; ++j){
-                if(!vis[i][j] and grid[i][j]=='1'){
-                    func(grid, i, j);
+        row=grid.size();
+        col=grid[0].size();
+        vector<vector<bool>> vis(row+1,vector<bool>(col+1,false));
+        int ans=0;
+        for(int i=0; i<row; ++i){
+            for(int j=0; j<col; ++j){
+                if(!vis[i][j] and grid[i][j]=='L'){
+                    dfs(i,j,grid,vis);
                     ++ans;
                 }
             }
@@ -43,7 +39,6 @@ class Solution {
         return ans;
     }
 };
-
 
 
 //{ Driver Code Starts.
@@ -60,8 +55,11 @@ int main() {
             }
         }
         Solution obj;
-        int ans = obj.numIslands(grid);
+        int ans = obj.countIslands(grid);
         cout << ans << '\n';
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
