@@ -2,70 +2,58 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 // } Driver Code Ends
-class Solution
-{
-	public:
-	//Function to return list containing vertices in Topological order. 
-	vector<int> topoSort(int v, vector<int> adj[]) 
-	{
-	    // code here
-	    queue<int> q;
-	    
-	    int degree[v];
-	    memset(degree, 0, sizeof(degree));
-	    
-	    for(int node=0; node<v; ++node){
-	        for(const auto &child : adj[node]){
-	            ++degree[child];
-	        }
-	    }
-	    
-	    for(int i=0; i<v; ++i){
-	        if(degree[i] == 0)
-	            q.push(i);
-	    }
-	    
-	    vector<int> ans;
-	    
-	    while(q.size()){
-	        int front = q.front();
-            q.pop();
-            ans.push_back(front);
-            
-            for(const auto &child : adj[front]){
-                if(degree[child] > 0){
-                    --degree[child];
-                    if(degree[child] == 0)
-                        q.push(child);
+
+class Solution {
+  public:
+    vector<int> topoSort(int V, vector<vector<int>>& edges) {
+        // code here
+        vector<int> ans;
+        vector<int> incoming(V+1, 0);
+        vector<vector<int>> adj(V+1, vector<int>());
+        for(auto &e : edges){
+            ++incoming[e[1]];
+            adj[e[0]].push_back(e[1]);
+        }
+        queue<int> q;
+        for(int i=0; i<V; ++i){
+            if(incoming[i]==0)
+                q.push(i);
+        }
+        while(q.size()){
+            int count=q.size();
+            while(count--){
+                int front=q.front();
+                q.pop();
+                ans.push_back(front);
+                for(auto &neigh : adj[front]){
+                    --incoming[neigh];
+                    if(incoming[neigh]==0)
+                        q.push(neigh);
                 }
             }
-	    }
-	    
-	    return ans;
-	}
+        }
+        return ans;
+    }
 };
+
 
 //{ Driver Code Starts.
 
-/*  Function to check if elements returned by user
-*   contains the elements in topological sorted form
-*   V: number of vertices
-*   *res: array containing elements in topological sorted form
-*   adj[]: graph input
-*/
-int check(int V, vector <int> &res, vector<int> adj[]) {
-    
-    if(V!=res.size())
-    return 0;
-    
+int check(int V, vector<int> &res, vector<vector<int>> adj) {
+
+    if (V != res.size())
+        return 0;
+
     vector<int> map(V, -1);
     for (int i = 0; i < V; i++) {
         map[res[i]] = i;
     }
     for (int i = 0; i < V; i++) {
         for (int v : adj[i]) {
-            if (map[i] > map[v]) return 0;
+            if (map[i] > map[v])
+                return 0;
         }
     }
     return 1;
@@ -75,23 +63,30 @@ int main() {
     int T;
     cin >> T;
     while (T--) {
-        int N, E;
-        cin >> E >> N;
-        int u, v;
+        int V, E;
+        cin >> V >> E;
 
-        vector<int> adj[N];
+        vector<vector<int>> adj(V);
+        vector<vector<int>> edges;
 
         for (int i = 0; i < E; i++) {
+            int u, v;
             cin >> u >> v;
             adj[u].push_back(v);
+            edges.push_back({u, v});
         }
-        
-        Solution obj;
-        vector <int> res = obj.topoSort(N, adj);
 
-        cout << check(N, res, adj) << endl;
+        Solution obj;
+        vector<int> res = obj.topoSort(V, edges);
+        bool ans = check(V, res, adj);
+        if (ans)
+            cout << "true\n";
+        else
+            cout << "false\n";
+        cout << "~"
+             << "\n";
     }
-    
+
     return 0;
 }
 // } Driver Code Ends
