@@ -12,14 +12,6 @@ struct Node {
     }
 };
 
-void printList(Node *node) {
-    while (node != NULL) {
-        cout << node->data << " ";
-        node = node->next;
-    }
-    cout << "\n";
-}
-
 void loopHere(Node *head, Node *tail, int position) {
     if (position == 0)
         return;
@@ -32,8 +24,8 @@ void loopHere(Node *head, Node *tail, int position) {
 
 
 // } Driver Code Ends
-/*
 
+/*
 struct Node {
     int data;
     struct Node *next;
@@ -50,35 +42,30 @@ class Solution {
     int countNodesinLoop(Node *head) {
         // Code here
         Node *slow=head, *fast=head;
-        int count=0;
-        
-        if(!fast->next)
-            return 0;
-        
+        // Floyd's Cycle Detection Algo
         do{
-            slow = slow->next;
+            // don't have any cycle
+            if(!fast->next or !fast->next->next)
+                return 0;
             fast = fast->next->next;
-        }while(fast and fast->next and slow != fast);
-        
-        if(!fast or !fast->next)
-            return 0;
-        
+            slow = slow->next;
+        }while(slow!=fast);
         fast = head;
-        // finding entry point of loop
-        while(slow != fast){
-            slow = slow->next;
+        // finding starting node of cycle
+        while(slow!=fast){
             fast = fast->next;
-        }
-        
-        // calc. loop node count
-        do{
             slow = slow->next;
-            ++count;
-        }while(slow != fast);
-        
-        return count;
+        }
+        int len=0;
+        // finding cycle length
+        do{
+            ++len;
+            slow = slow->next;
+        }while(slow!=fast);
+        return len;
     }
 };
+
 
 //{ Driver Code Starts.
 
@@ -108,6 +95,7 @@ int main() {
 
         Solution ob;
         cout << ob.countNodesinLoop(head) << endl;
+        cout << "~" << endl;
     }
     return 0;
 }
