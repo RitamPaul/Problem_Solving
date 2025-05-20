@@ -1,89 +1,6 @@
-//{ Driver Code Starts
-//Initial Template for C++
-
-#include <bits/stdc++.h>
-using namespace std;
-
-struct Node {
-    int data;
-    Node *left;
-    Node *right;
-
-    Node(int val) {
-        data = val;
-        left = right = NULL;
-    }
-};
-
-
-Node *buildTree(string str) {
-    // Corner Case
-    if (str.length() == 0 || str[0] == 'N')
-        return NULL;
-
-    // Creating vector of strings from input
-    // string after spliting by space
-    vector<string> ip;
-
-    istringstream iss(str);
-    for (string str; iss >> str;)
-        ip.push_back(str);
-
-    // Create the root of the tree
-    Node *root = new Node(stoi(ip[0]));
-
-    // Push the root to the queue
-    queue<Node *> queue;
-    queue.push(root);
-
-    // Starting from the second element
-    int i = 1;
-    while (!queue.empty() && i < ip.size()) {
-
-        // Get and remove the front of the queue
-        Node *currNode = queue.front();
-        queue.pop();
-
-        // Get the current Node's value from the string
-        string currVal = ip[i];
-
-        // If the left child is not null
-        if (currVal != "N") {
-
-            // Create the left child for the current Node
-            currNode->left = new Node(stoi(currVal));
-
-            // Push it to the queue
-            queue.push(currNode->left);
-        }
-
-        // For the right child
-        i++;
-        if (i >= ip.size())
-            break;
-        currVal = ip[i];
-
-        // If the right child is not null
-        if (currVal != "N") {
-
-            // Create the right child for the current Node
-            currNode->right = new Node(stoi(currVal));
-
-            // Push it to the queue
-            queue.push(currNode->right);
-        }
-        i++;
-    }
-
-    return root;
-}
-
-
-// } Driver Code Ends
-//User function Template for C++
-
 /*
-struct Node {
+class Node {
+  public:
     int data;
     Node *left;
     Node *right;
@@ -96,75 +13,34 @@ struct Node {
 */
 class Solution {
   public:
-    int ans;
-    pair<bool,int> func(Node *root, int target){
-        // base case
+    int target2closeleaf, target2farleaf, targetfound;
+    pair<int,int> dfs(Node *root, int target){
         if(!root)
             return {false,0};
+        pair<int,int> lc=dfs(root->left, target);
+        bool foundinleft=lc.first;
+        int leafdisinleft=lc.second;
+        pair<int,int> rc=dfs(root->right, target);
+        bool foundinright=rc.first;
+        int leafdisinright=rc.second;
         
-        // recursive case
-        pair<bool,int> lc = func(root->left, target);
-        pair<bool,int> rc = func(root->right, target);
-        bool foundleft = lc.first;
-        bool foundright = rc.first;
-        int maxdisleft = lc.second;
-        int maxdisright = rc.second;
-        
-        // backtracking case
-        bool targetfound = foundleft or foundright or (root->data == target);
-        
-        if(foundleft or foundright)
-            ans = max(ans, maxdisleft+maxdisright);
-        else if(root->data == target)
-            ans = max(ans, max(maxdisleft,maxdisright));
-        
-        int heightreturn;
-        if(root->data == target)
-            heightreturn = 1;
-        else if(foundleft)
-            heightreturn = maxdisleft + 1;
-        else if(foundright)
-            heightreturn = maxdisright + 1;
-        else
-            heightreturn = max(maxdisleft,maxdisright) + 1;
-        
-        // return from current state
-        return {targetfound, heightreturn};
+        // from now, we will send distance till this node not till leaf
+        if(root->data==target){
+            target2closeleaf=max({target2closeleaf, leafdisinleft, leafdisinright});
+            return {true,1};
+        }
+        if(foundinleft or foundinright){
+            target2farleaf = max({target2farleaf, leafdisinleft+leafdisinright});
+            if(foundinleft)
+                return {true,leafdisinleft+1};
+            return {true,leafdisinright+1};
+        }
+        return {false,max(leafdisinleft,leafdisinright)+1};
     }
-    int minTime(Node* root, int target) 
-    {
-        // Your code goes here
-        ans = 0;
-        pair<bool,int> dummy = func(root, target);
-        return ans;
+    int minTime(Node* root, int target) {
+        // code here
+        target2closeleaf=target2farleaf=targetfound=0;
+        dfs(root, target);
+        return max(target2closeleaf,target2farleaf);
     }
 };
-
-//{ Driver Code Starts.
-
-int main() 
-{
-    int tc;
-    scanf("%d ", &tc);
-    while (tc--) 
-    {    
-        string treeString;
-        getline(cin, treeString);
-        // cout<<treeString<<"\n";
-        int target;
-        cin>>target;
-        // cout<<target<<"\n";
-
-        Node *root = buildTree(treeString);
-        Solution obj;
-        cout<<obj.minTime(root, target)<<"\n"; 
-
-        cin.ignore();
-
-    }
-
-
-    return 0;
-}
-
-// } Driver Code Ends
