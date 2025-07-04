@@ -1,11 +1,13 @@
 # Write your MySQL query statement below
--- delete from Person
--- where email in (
---     select distinct email from Person
--- )
--- and id <> (
---     select min(id) from Person group by email
--- );
+delete from Person
+where email in (
+    select * from 
+    (select distinct email from Person) as temp1
+)
+and id not in (
+    select * from
+    (select min(id) from Person group by email) as temp2
+);
 
 
 
@@ -24,11 +26,11 @@
 
 
 
-delete from Person
-where id not in (
-    select * from
-    (
-        select min(id) from Person
-        group by email
-    ) as temp
-);
+-- delete from Person
+-- where id not in (
+--     select * from
+--     (
+--         select min(id) from Person
+--         group by email
+--     ) as temp
+-- );
