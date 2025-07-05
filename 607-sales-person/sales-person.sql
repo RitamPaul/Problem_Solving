@@ -4,8 +4,8 @@ from
 (SalesPerson sp) left join (Orders o join Company c on o.com_id=c.com_id)
 on
 sp.sales_id=o.sales_id
-where c.name is null or sp.sales_id not in (
-    select sp1.sales_id 
+where c.name is null or not exists (
+    select 1 
     from
     (SalesPerson sp1) join (Orders o join Company c on o.com_id=c.com_id)
     on
