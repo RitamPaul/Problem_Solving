@@ -10,14 +10,24 @@
  */
 class Solution {
 public:
+    int bs(int target, vector<int>& nums){
+        int n=nums.size(), low=0, high=n-1, mid;
+        while(low<=high){
+            mid = low + (high-low) / 2;
+            if(nums[mid] == target)
+                return mid;
+            else if(nums[mid] < target)
+                low = mid+1;
+            else
+                high = mid-1;
+        }
+        return -1;
+    }
     ListNode* modifiedList(vector<int>& nums, ListNode* head) {
-        unordered_set<int> st;
-        for (auto& i : nums)
-            st.insert(i);
-
-        ListNode *prev = NULL, *cur = head;
-        while (cur) {
-            if (st.count(cur->val)){
+        sort(nums.begin(), nums.end());
+        ListNode *cur=head, *prev=NULL;
+        while(cur){
+            if(bs(cur->val, nums) >= 0){
                 if(!prev)
                     head = head->next;
                 else
